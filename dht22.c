@@ -38,14 +38,16 @@ static int ICACHE_FLASH_ATTR get_index(int pin)
 
 void ICACHE_FLASH_ATTR DHT_begin(void) 
 {
-	os_printf("DHT BEGIN\r\n");
+	LOG_DEBUG("DHT BEGIN");
 
 	// set up the pins!
 	int index = get_index(_pin);
 
+	gpio_init();
 	PIN_FUNC_SELECT(pin_mux[index],pin_func[index]); 
-	gpio_output_set(pin_num[index], 0, pin_num[index], 0); //Set high-level output
-
+	//GPIO_OUTPUT_SET(_pin,1);
+	GPIO_DIS_OUTPUT(_pin);
+	PIN_PULLUP_EN(pin_mux[index]);
 
 	// Using this value makes sure that millis() - lastreadtime will be >= MIN_INTERVAL right away. Note that this assignment wraps around, but so will the subtraction.
 	_lastreadtime = -MIN_INTERVAL;
@@ -60,7 +62,7 @@ static bool read() {
 	uint32 current =  system_get_time();
 	if ( current - _lastreadtime < 2000000 )
 	{	
-		os_printf("2 seconds is required between polls,  Its only been %d (ms)\r\n",(current-_lastreadtime) / 1000);
+		LOG_DEBUG_ARGS("2 seconds is required between polls,  Its only been %d (ms)",(current-_lastreadtime) / 1000);
 		return _lastresult;
 	}
 	_lastreadtime=current;
@@ -78,9 +80,9 @@ static bool read() {
 	os_delay_us(250*1000);
 
 
-	// First set data line low for 20 milliseconds.
+	// First set data line low for 10 milliseconds.
 	GPIO_OUTPUT_SET(_pin,0);
-	os_delay_us(20*1000);
+	os_delay_us(10*1000);
 
 	uint32_t cycles[80];
 	{
@@ -96,19 +98,20 @@ static bool read() {
 		// Now start reading the data line to get the value from the DHT sensor.
 		GPIO_DIS_OUTPUT(_pin);
 		PIN_PULLUP_EN(pin_mux[index]);
-		os_delay_us(10);  // Delay a bit to let sensor pull data line low.
+
+		//os_delay_us(100);  // Delay a bit to let sensor pull data line low.
 
 		// First expect a low signal for ~80 microseconds followed by a high signal
 		// for ~80 microseconds again.
 		if (expectPulse(0) == 0) 
 		{
-			os_printf("Timeout waiting for start signal low pulse.\r\n");
+			LOG_DEBUG("Timeout waiting for start signal low pulse.");
 			_lastresult = false;
 			return _lastresult;
 		}
 		if (expectPulse(1) == 0) 
 		{
-			os_printf("Timeout waiting for start signal high pulse.\r\n");
+			LOG_DEBUG("Timeout waiting for start signal high pulse.");
 			_lastresult = false;
 			return _lastresult;
 		}
@@ -139,7 +142,7 @@ static bool read() {
 		uint32_t highCycles = cycles[2*i+1];
 		if ((lowCycles == 0) || (highCycles == 0)) 
 		{
-			os_printf("Timeout waiting for pulse.\r\n");
+			LOG_DEBUG("Timeout waiting for pulse.");
 			_lastresult = false;
 			return _lastresult;
 		}
@@ -155,7 +158,7 @@ static bool read() {
 		// stored data.
 	}
 
-	os_printf("Received: %d,%d,%d,%d,%d ?= %d\r\n",data[0],data[1],data[2],data[3],data[4],(data[0] + data[1] + data[2] + data[3]) & 0xFF );
+	LOG_DEBUG_ARGS("Received: %d,%d,%d,%d,%d ?= %d",data[0],data[1],data[2],data[3],data[4],(data[0] + data[1] + data[2] + data[3]) & 0xFF );
 
 
 
@@ -195,14 +198,12 @@ static bool read() {
 //   https://github.com/arduino/Arduino/blob/master/hardware/arduino/avr/cores/arduino/wiring_pulse.c
 uint32_t expectPulse(bool level) 
 {
-	int index = get_index(_pin);
-
 	uint32_t count = 0;
-	while (GPIO_INPUT_GET(pin_num[index]) == level) 
+	while (GPIO_INPUT_GET(_pin) == level) 
 	{
 		if (count++ >= _maxcycles) 
 		{
-			LOG_DEBUG("Max cycles reached");
+			LOG_DEBUG_ARGS("Max cycles reached: %d",count);
 			return 0; // Exceeded timeout, fail.
       		}
     	}
@@ -211,7 +212,7 @@ uint32_t expectPulse(bool level)
 
 void DHT_init(uint8_t pin, uint8_t type, uint8_t count) 
 {
-	os_printf("DHT_INIT\r\n");
+	LOG_DEBUG("DHT_INIT");
 	_pin = pin;
 	_type = type;
 
@@ -225,7 +226,7 @@ void DHT_init(uint8_t pin, uint8_t type, uint8_t count)
 	float result = int_part + (float)dec_part/1000.0f;
 
 	_maxcycles = 1000.0f / result;
-	os_printf("max cycles: %d\r\n",(int)_maxcycles);
+	LOG_DEBUG_ARGS("max cycles: %d",(int)_maxcycles);
 }
 
 

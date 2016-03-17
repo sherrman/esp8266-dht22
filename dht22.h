@@ -16,12 +16,12 @@ written by IoT Pipe
 
 #include "gpio.h"
 // Uncomment to enable printing out nice debug messages.
-#define DHT_DEBUG
+//#define DHT_DEBUG
 
 // Setup debug printing macros.
 #ifdef DHT_DEBUG
-	#define LOG_DEBUG(message)		do {os_printf("[JIT-DEBUG] %d", message); os_printf("\r\n");} while (0)
-	#define LOG_DEBUG_ARGS(message, args...)		do {os_printf("[JIT-DEBUG] "); os_printf(message, args); os_printf("\r\n");} while (0)
+	#define LOG_DEBUG(message)		do {os_printf("[DHT-DEBUG] %s", message); os_printf("\r\n");} while (0)
+	#define LOG_DEBUG_ARGS(message, args...)		do {os_printf("[DHT-DEBUG] "); os_printf(message, args); os_printf("\r\n");} while (0)
 #else
 	#define LOG_DEBUG(message) do {} while(0)
 	#define LOG_DEBUG_ARGS(message, args...) do {} while(0)
@@ -32,11 +32,6 @@ written by IoT Pipe
 #define DHT22 22
 #define DHT21 21
 #define AM2301 21
-
-
-
-
-
 
 
 static uint8_t data[5];
