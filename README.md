@@ -7,9 +7,9 @@ Supported models are:
 -DHT21 (AM2301) 
 -DHT22 (AM2302)
 
-It is a port of the DHT Sensor library for the arduino created by @adafruit , which you can find [here(https://github.com/adafruit/DHT-sensor-library)].
+It is a port of the DHT Sensor library for the arduino created by @adafruit , which you can find [here](https://github.com/adafruit/DHT-sensor-library).
 
-Additional information about the DTHXX can be found in this [spec sheet(https://www.adafruit.com/datasheets/Digital%20humidity%20and%20temperature%20sensor%20AM2302.pdf)].
+Additional information about the DTHXX can be found in this [spec sheet](https://www.adafruit.com/datasheets/Digital%20humidity%20and%20temperature%20sensor%20AM2302.pdf).
 
 ## Usage
 The library is comprised of a single header and source code file.  Simply include dht.h at the top of your program to get started.
@@ -69,3 +69,6 @@ void read_humidity_timerfunc(void)
 The 1 wire communication bus relays on very exact timing.  During the signal reading process any interrupts will corrupt the result.  In Adafruit's Arduino implementation they disable all interrupts during the reading process.  The ESP8266 cannot disable all interrupts so if an interrupt does occur expect a bad result.  Luckily, bad results are returned as -1, so you have a way to verify.
 
 On the Adafruit Huzzah using certain pins will result in failure to read the signal if you don't power cycle your ESP8266 after flashing and after hitting the reset button.  So far, this has happened on Pins #2 and #4.  Pin #14, however, does not have this issue.  When in doubt, power cycle!
+
+##Contact the author
+Reach out on twitter [@iotpipe](https://twitter.com/iot_pipe)
