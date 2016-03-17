@@ -16,17 +16,17 @@ The library is comprised of a single header and source code file.  Simply includ
 
 There are only 4 functions you'll need to read temperature and humidity data.
 ```C
-/*Initializes the DHT.  User must specify which GPIO on the ESP8266 is connected to the DHT and which member of the DHTXX family is being used.  Options are DHT11, DHT21, AM2301, DHT22, AM2302.  This must be called before reading the DHT*/ 
-void DHT_init(uint8_t pin, uint8_t sensor_type)
+/*Initializes the DHT.  User must specify which GPIO on the ESP8266 is connected to the DHT and which member of the DHTXX family is being used.  Options are DHT11, DHT21, AM2301, DHT22, AM2302.  This must be called before reading the DHT*/
+void DHT_init(uint8_t pin, uint8_t type);
 
 /*Prepare ESP8266 for reading the DHT.  This must be called before reading the DHT.*/
-void DHT_begin(void)
+void DHT_begin(void);
 
-/*Returns a floating point value of the temperature.  User can specify if they want value in Celsius or Fahrenheight*/
-float readTemperature(bool isCelsius)
+/*Returns a floating point value of the temperature, or -1 if failed.  User can specify if they want value in Celsius or Fahrenheight*/
+float readTemperature(bool isFahrenheit);
 
-/*Returns a floating point value of the humidity.*/
-float readHumidity()
+/*Returns a floating point value of the humidity, or -1 if failed.*/
+float readHumidity();
 ```
 
 A a quick example, here is a sample user_main.c file which prints out the humidity and temperature every 3 seconds.
