@@ -55,7 +55,7 @@ void user_init(void)
 void read_humidity_timerfunc(void)
 {
         float t = readTemperature(false);
-        float h = readHumidity(false);
+        float h = readHumidity();
         
         os_printf("Temperature (C): %d\r\n", (int)t);
         os_printf("Humidity (C): %d\r\n", (int)h);
