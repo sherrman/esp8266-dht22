@@ -210,7 +210,7 @@ uint32_t expectPulse(bool level)
 	return count;
 }
 
-void DHT_init(uint8_t pin, uint8_t type, uint8_t count) 
+void DHT_init(uint8_t pin, uint8_t type)
 {
 	LOG_DEBUG("DHT_INIT");
 	_pin = pin;

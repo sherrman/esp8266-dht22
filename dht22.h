@@ -44,7 +44,7 @@ static bool read();
 
 
 
-void DHT_init(uint8_t pin, uint8_t type, uint8_t count);
+void DHT_init(uint8_t pin, uint8_t type);
 void DHT_begin(void);
 float readTemperature(bool S);
 float readHumidity();
